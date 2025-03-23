@@ -19,11 +19,7 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       required: [true, 'Username is required'],
-      unique: [true, 'Username is already present'],
-      match: [
-        /[0-9]{6,15}[a-zA-Z]/,
-        'Username must contain only letters and numbers'
-      ]
+      unique: [true, 'Username is already present']
     },
     avatar: {
       type: String
