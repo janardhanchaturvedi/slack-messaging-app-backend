@@ -1,5 +1,5 @@
-import crudRespository from './crudRepository';
 import User from '../schema/user.js';
+import crudRespository from './crudRepository.js';
 const userRespository = {
   ...crudRespository(User),
   getByEmail: async function (email) {
