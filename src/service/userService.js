@@ -29,7 +29,7 @@ export const signUpService = async (user) => {
   }
 };
 
-export const signIn = async (userData) => {
+export const signInService = async (userData) => {
   try {
     const user = await userRespository.getByEmail(data?.email);
     if (!user) {
