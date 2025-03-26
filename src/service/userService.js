@@ -1,8 +1,10 @@
+import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
+
 import userRespository from '../repository/userRepsitory.js';
+import { createJWT } from '../utils/common/authUtils.js';
 import clientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
-import { createJWT } from '../utils/common/authUtils.js';
 
 export const signUpService = async (user) => {
   try {
@@ -31,12 +33,12 @@ export const signUpService = async (user) => {
 
 export const signInService = async (userData) => {
   try {
-    const user = await userRespository.getByEmail(data?.email);
+    const user = await userRespository.getByEmail(userData?.email);
     if (!user) {
       throw new clientError({
         explanation: 'Invalid data is send from the client',
         message: 'No registered user found with this email',
-        statusCode: StatusCodes.NOT_FOUNDs
+        statusCode: StatusCodes.NOT_FOUND
       });
     }
 

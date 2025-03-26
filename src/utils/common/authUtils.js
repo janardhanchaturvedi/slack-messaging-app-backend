@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+
 import { JWT_EXPIRY, JWT_SECRET_KEY } from '../../config/serverConfig.js';
 
 export const createJWT = (data) => {

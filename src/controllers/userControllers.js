@@ -26,7 +26,7 @@ export const signUp = async (req, res) => {
   }
 };
 
-export const signIn = async (req, res, next) => {
+export const signIn = async (req, res) => {
   try {
     const response = await signInService(req.body);
     return res
