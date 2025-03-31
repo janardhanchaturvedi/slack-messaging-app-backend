@@ -1,5 +1,5 @@
-import Channel from '../schema/channel';
-import crudRespository from './crudRepository';
+import Channel from '../schema/channel.js';
+import crudRespository from './crudRepository.js';
 
 const channelRepository = {
   ...crudRespository(Channel)

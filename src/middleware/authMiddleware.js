@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { jwt } from 'jsonwebtoken';
+import jwt  from 'jsonwebtoken';
 
 import { JWT_SECRET_KEY } from '../config/serverConfig.js';
 import userRepository from '../repository/userRepsitory.js';

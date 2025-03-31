@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 
-import Workspace from '../schema/workspace';
-import clientError from '../utils/errors/clientError';
-import crudRespository from './crudRepository';
-import channelRepository from './channelRepository';
+import Workspace from '../schema/workspace.js';
+import clientError from '../utils/errors/clientError.js';
+import channelRepository from './channelRepository.js';
+import crudRespository from './crudRepository.js';
 
 const workspaceRepository = {
   ...crudRespository,
@@ -108,7 +108,7 @@ const workspaceRepository = {
 
     return workspace;
   },
-  fetchAllWorkspaceByMemberId: async function () {
+  fetchAllWorkspaceByMemberId: async function (memberId) {
     const workspaces = await Workspace.find({
       'members.memberId': memberId
     }).populate('members.memberId', 'username email avatar');
