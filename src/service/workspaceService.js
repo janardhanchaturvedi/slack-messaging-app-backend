@@ -1,12 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
-
 import workspaceRepository from '../repository/workspaceRepository.js';
 import { channels, roles } from '../utils/common/enum.js';
 import ValidationError from '../utils/errors/validationError.js';
 
 export const createWorkspaceService = async (workspaceData) => {
   try {
-    const joinCode = uuidv4.substring(0, 6).toUpperCase();
+    const joinCode = uuidv4().substring(0, 6).toUpperCase();
 
     const response = await workspaceRepository.create({
       name: workspaceData.name,

@@ -6,7 +6,7 @@ import channelRepository from './channelRepository.js';
 import crudRespository from './crudRepository.js';
 
 const workspaceRepository = {
-  ...crudRespository,
+  ...crudRespository(Workspace),
   getWorkspaceByName: async function (workspaceName) {
     const workspace = await Workspace.findOne({
       name: workspaceName
