@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import workspaceRepository from '../repository/workspaceRepository.js';
 import { channels, roles } from '../utils/common/enum.js';
 import ValidationError from '../utils/errors/validationError.js';
+import clientError from '../utils/errors/clientError.js';
+import { StatusCodes } from 'http-status-codes';
+import channelRepository from '../repository/channelRepository.js';
 
 export const createWorkspaceService = async (workspaceData) => {
   try {
@@ -45,6 +48,52 @@ export const createWorkspaceService = async (workspaceData) => {
         'A workspace with same details already exists'
       );
     }
+    throw error;
+  }
+};
+
+export const getWorkspaceUserIsMemberOfService = async (userId) => {
+  try {
+    const response =
+      await workspaceRepository.fetchAllWorkspaceByMemberId(userId);
+    return response;
+  } catch (error) {
+    console.log('🚀 ~ getWorkspaceUserIsMemberOfService ~ error:', error);
+    throw error;
+  }
+};
+
+export const deleteWorkspaceService = async (workspaceId, userId) => {
+  console.log('🚀 ~ deleteWorkspaceService ~ workspaceId:', workspaceId);
+  try {
+    const workspace = await workspaceRepository.getById(workspaceId);
+
+    if (!workspace) {
+      throw new clientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'Workspace not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    const isAllowed = workspace.members.find((member) => {
+      return member.memberId.toString() === userId && member.role === 'admin';
+    });
+
+    if (isAllowed) {
+      await channelRepository.deleteMany(workspace.channels);
+
+      const response = await workspaceRepository.delete(workspaceId);
+      return response;
+    }
+
+    throw new clientError({
+      explanation: 'User is either not a member or and admin of the workspacce',
+      message: 'User is not allowed to delete the workspace',
+      statusCode: StatusCodes.UNAUTHORIZED
+    });
+  } catch (error) {
+    console.log('🚀 ~ deleteWorkspaceService ~ error:', error);
     throw error;
   }
 };
