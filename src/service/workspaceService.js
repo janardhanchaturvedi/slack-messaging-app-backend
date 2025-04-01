@@ -64,7 +64,6 @@ export const getWorkspaceUserIsMemberOfService = async (userId) => {
 };
 
 export const deleteWorkspaceService = async (workspaceId, userId) => {
-  console.log('🚀 ~ deleteWorkspaceService ~ workspaceId:', workspaceId);
   try {
     const workspace = await workspaceRepository.getById(workspaceId);
 
