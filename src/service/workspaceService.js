@@ -7,6 +7,18 @@ import { channels, roles } from '../utils/common/enum.js';
 import clientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
 
+const isUserAdminOfWorkspace = (workspace, userId) => {
+  return workspace.members.find(
+    (member) =>
+      member.memberId.toString() === userId && member.role === roles.ADMIN
+  );
+};
+
+const isUserMemeberOfWorkspace = (workspace, userId) => {
+  return workspace.members.find(
+    (member) => member.memberId.toString() === userId
+  );
+};
 export const createWorkspaceService = async (workspaceData) => {
   try {
     const joinCode = uuidv4().substring(0, 6).toUpperCase();
@@ -75,9 +87,7 @@ export const deleteWorkspaceService = async (workspaceId, userId) => {
       });
     }
 
-    const isAllowed = workspace.members.find((member) => {
-      return member.memberId.toString() === userId && member.role === 'admin';
-    });
+    const isAllowed = isUserAdminOfWorkspace(workspace, userId);
 
     if (isAllowed) {
       await channelRepository.deleteMany(workspace.channels);
@@ -96,3 +106,24 @@ export const deleteWorkspaceService = async (workspaceId, userId) => {
     throw error;
   }
 };
+
+export const getWorkspaceService = async (workspaceId, userId) => {};
+
+export const getWorkspaceByJoinCode = async (joinCode) => {};
+
+export const updateWorkspaceService = async (
+  workspaceId,
+  workspaceData,
+  userId
+) => {};
+
+export const addMemeberToWorkspaceService = async (
+  workspaceId,
+  userId,
+  role
+) => {};
+
+export const addChannelToWorkspaceService = async (
+  workspaceId,
+  channelName
+) => {};
