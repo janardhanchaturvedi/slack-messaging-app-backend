@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
-import User from '../schema/user.js'
+import User from '../schema/user.js';
 import Workspace from '../schema/workspace.js';
 import clientError from '../utils/errors/clientError.js';
 import channelRepository from './channelRepository.js';
@@ -114,6 +114,13 @@ const workspaceRepository = {
     }).populate('members.memberId', 'username email avatar');
 
     return workspaces;
+  },
+  getWorkspaceDetailsById: async function (workspaceId) {
+    const workspace = await Workspace.findById(workspaceId).populate(
+      'member.memberId',
+      'username email avatar'
+    );
+    return workspace;
   }
 };
 
