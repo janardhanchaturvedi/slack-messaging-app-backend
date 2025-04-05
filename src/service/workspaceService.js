@@ -208,7 +208,7 @@ export const updateWorkspaceService = async (
   }
 };
 
-export const addMemeberToWorkspaceService = async (
+export const addMemberToWorkspaceService = async (
   workspaceId,
   userId,
   role
@@ -234,10 +234,10 @@ export const addMemeberToWorkspaceService = async (
     }
 
     const isMember = isUserMemeberOfWorkspace(workspace, userId);
-    if (!isMember) {
+    if (isMember) {
       throw new clientError({
-        explanation: 'User is not a member of workspace',
-        message: 'User is not a member of workspace',
+        explanation: 'User is already a member of workspace',
+        message: 'User is already a member of workspace',
         statusCode: StatusCodes.UNAUTHORIZED
       });
     }
