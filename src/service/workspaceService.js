@@ -8,7 +8,7 @@ import { channels, roles } from '../utils/common/enum.js';
 import clientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
 
-const isUserAdminOfWorkspace = (workspace, userId) => {
+export const isUserAdminOfWorkspace = (workspace, userId) => {
   return workspace.members.find(
     (member) =>
       (member.memberId.toString() === userId ||
@@ -17,15 +17,13 @@ const isUserAdminOfWorkspace = (workspace, userId) => {
   );
 };
 
-const isUserMemeberOfWorkspace = (workspace, userId) => {
-  console.log('🚀 ~ isUserMemeberOfWorkspace ~ workspace:', workspace , userId);
+export const isUserMemeberOfWorkspace = (workspace, userId) => {
   return workspace.members.find(
     (member) => member.memberId.toString() === userId
   );
 };
 
-const isChannelAlreadyPartOfWorkspace = (workspace, channelName) => {
-  console.log("🚀 ~ isChannelAlreadyPartOfWorkspace ~ workspace:", workspace)
+export const isChannelAlreadyPartOfWorkspace = (workspace, channelName) => {
   return workspace.channels.find(
     (channel) => channel.name.toLowerCase() === channelName.toLowerCase()
   );
