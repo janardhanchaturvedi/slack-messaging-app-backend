@@ -11,17 +11,21 @@ import ValidationError from '../utils/errors/validationError.js';
 const isUserAdminOfWorkspace = (workspace, userId) => {
   return workspace.members.find(
     (member) =>
-      member.memberId.toString() === userId && member.role === roles.ADMIN
+      (member.memberId.toString() === userId ||
+        member.memberId.toString() === userId) &&
+      member.role === roles.ADMIN
   );
 };
 
 const isUserMemeberOfWorkspace = (workspace, userId) => {
+  console.log('🚀 ~ isUserMemeberOfWorkspace ~ workspace:', workspace , userId);
   return workspace.members.find(
     (member) => member.memberId.toString() === userId
   );
 };
 
 const isChannelAlreadyPartOfWorkspace = (workspace, channelName) => {
+  console.log("🚀 ~ isChannelAlreadyPartOfWorkspace ~ workspace:", workspace)
   return workspace.channels.find(
     (channel) => channel.name.toLowerCase() === channelName.toLowerCase()
   );
@@ -156,7 +160,7 @@ export const getWorkspaceByJoinCodeService = async (joinCode, userId) => {
       });
     }
 
-    const isMember = isUserMemeberOfWorkspace(userId);
+    const isMember = isUserMemeberOfWorkspace(workspace, userId);
 
     if (!isMember) {
       throw new clientError({
@@ -210,8 +214,9 @@ export const updateWorkspaceService = async (
 
 export const addMemberToWorkspaceService = async (
   workspaceId,
-  userId,
-  role
+  memberId,
+  role,
+  userId
 ) => {
   try {
     const workspace = await workspaceRepository.getById(workspaceId);
@@ -224,7 +229,16 @@ export const addMemberToWorkspaceService = async (
       });
     }
 
-    const isValidUser = await userRespository.getById(userId);
+    const isAdmin = isUserAdminOfWorkspace(workspace, userId);
+    if (!isAdmin) {
+      throw new clientError({
+        explanation: 'User is not admin of the workspace',
+        message: 'User is not a admin of workspace',
+        statusCode: StatusCodes.UNAUTHORIZED
+      });
+    }
+
+    const isValidUser = await userRespository.getById(memberId);
     if (!isValidUser) {
       throw new clientError({
         explanation: 'Invalid data sent from client ',
@@ -233,7 +247,7 @@ export const addMemberToWorkspaceService = async (
       });
     }
 
-    const isMember = isUserMemeberOfWorkspace(workspace, userId);
+    const isMember = isUserMemeberOfWorkspace(workspace, memberId);
     if (isMember) {
       throw new clientError({
         explanation: 'User is already a member of workspace',
@@ -244,7 +258,7 @@ export const addMemberToWorkspaceService = async (
 
     const reponse = await workspaceRepository.addMemberToWorkspace(
       workspaceId,
-      userId,
+      memberId,
       role
     );
     return reponse;
@@ -275,19 +289,6 @@ export const addChannelToWorkspaceService = async (
         explanation: 'User is not the admin of the workspace',
         message: 'User is not the admin of the workspace',
         statusCode: StatusCodes.UNAUTHORIZED
-      });
-    }
-
-    const isChannelPartOfWorkspace = isChannelAlreadyPartOfWorkspace(
-      workspace,
-      channelName
-    );
-
-    if (isChannelPartOfWorkspace) {
-      throw new clientError({
-        explanation: 'Invalid data is sent from the user',
-        message: 'Channel is already a part of workspace',
-        statusCode: StatusCodes.FORBIDDEN
       });
     }
 

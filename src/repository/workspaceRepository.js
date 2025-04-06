@@ -79,7 +79,8 @@ const workspaceRepository = {
     return workspace;
   },
   addChannelToWorkspace: async function (workspaceId, channelName) {
-    const workspace = await Workspace.findById(workspaceId);
+    const workspace =
+      await Workspace.findById(workspaceId).populate('channels');
 
     if (!workspace) {
       clientError({
@@ -96,12 +97,15 @@ const workspaceRepository = {
     if (isChannelAlreadyPartOfWorkspace) {
       throw new clientError({
         explanation: 'Invalid data sent from the client',
-        mesaage: 'Channel already part of workspace',
+        message: 'Channel already part of workspace',
         statusCode: StatusCodes.FORBIDDEN
       });
     }
 
-    const channel = await channelRepository.create({ name: channelName });
+    const channel = await channelRepository.create({
+      name: channelName,
+      workspaceId: workspaceId
+    });
 
     workspace.channels.push(channel);
     await workspace.save();
